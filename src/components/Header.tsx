@@ -29,26 +29,7 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Navigation */}
-          <nav className="flex space-x-8">
-            {loading ? (
-              <span>Loading...</span>
-            ) : (
-              categories.map((cat: any) => (
-                <Link
-                  key={cat.name}
-                  to={`/${cat.name.toLowerCase()}`}
-                  className={`text-sm font-medium ${
-                    isActive(cat.name)
-                      ? 'text-green-500 border-b-2 border-green-500 pb-2'
-                      : 'text-gray-700 hover:text-green-500'
-                  }`}
-                  data-testid={isActive(cat.name) ? 'active-category-link' : 'category-link'}
-                >
-                  {cat.name.toUpperCase()}
-                </Link>
-              ))
-            )}
-          </nav>
+          {/* Category navigation removed as per request */}
 
           {/* Logo */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
