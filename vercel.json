@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/graphql", "destination": "http://jycwdzlv.infinityfree.com/graphql" },
     { "source": "/(.*)", "destination": "/" }
   ]
 } 
