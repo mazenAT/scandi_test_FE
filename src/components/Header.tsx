@@ -18,18 +18,37 @@ const Header: React.FC = () => {
   const location = useLocation();
   const totalItems = getTotalItems();
   const { data, loading } = useQuery(GET_CATEGORIES);
-  const categories = data?.categories || [];
+  const categories = [
+    { name: 'All', path: '/all' },
+    { name: 'Clothes', path: '/clothes' },
+    { name: 'Tech', path: '/tech' },
+  ];
 
-  const isActive = (category: string) => {
-    return location.pathname === `/${category.toLowerCase()}`;
+  const isActive = (categoryPath: string) => {
+    return location.pathname === categoryPath;
   };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-4 relative">
           {/* Navigation */}
-          {/* Category navigation removed as per request */}
+          <nav className="flex space-x-8">
+            {categories.map((cat) => (
+              <Link
+                key={cat.name}
+                to={cat.path}
+                className={`text-sm font-medium ${
+                  isActive(cat.path)
+                    ? 'text-green-500 border-b-2 border-green-500 pb-2'
+                    : 'text-gray-700 hover:text-green-500'
+                }`}
+                data-testid={isActive(cat.path) ? 'active-category-link' : 'category-link'}
+              >
+                {cat.name}
+              </Link>
+            ))}
+          </nav>
 
           {/* Logo */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
