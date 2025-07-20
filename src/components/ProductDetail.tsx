@@ -62,7 +62,7 @@ const ProductDetail: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Image Gallery */}
-        <div className="space-y-4">
+        <div className="space-y-4" data-testid="product-gallery">
           {/* Thumbnails */}
           <div className="flex space-x-2">
             {images.map((image: string, index: number) => (
@@ -119,7 +119,7 @@ const ProductDetail: React.FC = () => {
           </div>
           {/* Size Selection */}
           {product.attributes?.find((a: any) => a.name.toLowerCase() === 'size') && (
-            <div>
+            <div data-testid="product-attribute-size">
               <h3 className="text-sm font-medium text-gray-900 mb-3">SIZE:</h3>
               <div className="flex space-x-2">
                 {product.attributes
@@ -143,7 +143,7 @@ const ProductDetail: React.FC = () => {
           )}
           {/* Color Selection */}
           {product.attributes?.find((a: any) => a.name.toLowerCase() === 'color') && (
-            <div>
+            <div data-testid="product-attribute-color">
               <h3 className="text-sm font-medium text-gray-900 mb-3">COLOR:</h3>
               <div className="flex space-x-2">
                 {product.attributes
@@ -180,12 +180,12 @@ const ProductDetail: React.FC = () => {
                 ? 'bg-green-500 hover:bg-green-600 text-white'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             } transition-colors`}
-            data-testid="add-to-cart-button"
+            data-testid="add-to-cart"
           >
             {!product.inStock ? 'OUT OF STOCK' : 'ADD TO CART'}
           </button>
           {/* Product Description */}
-          <div className="pt-6 border-t border-gray-200">
+          <div className="pt-6 border-t border-gray-200" data-testid="product-description">
             <p className="text-sm text-gray-600">
               {product.description}
             </p>
