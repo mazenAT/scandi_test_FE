@@ -1,7 +1,9 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
+const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+
 const client = new ApolloClient({
-  uri: '/api/graphql',
+  uri: isLocal ? 'http://localhost:8000/graphql' : 'https://scanditest.fwh.is/graphql',
   cache: new InMemoryCache(),
 });
 

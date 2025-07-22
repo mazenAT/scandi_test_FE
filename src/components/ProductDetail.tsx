@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { gql, useQuery } from '@apollo/client';
 import { useCart } from '../context/CartContext';
+import parse from 'html-react-parser';
 
 const GET_PRODUCT = gql`
   query GetProduct($id: String!) {
@@ -153,9 +154,10 @@ const ProductDetail: React.FC = () => {
                       <button
                         key={color.value}
                         onClick={() => setSelectedColor(color.value)}
-                        className={`w-8 h-8 rounded border-2 bg-gray-300 ${
+                        className={`w-8 h-8 rounded border-2 ${
                           selectedColor === color.value ? 'border-black' : 'border-gray-300'
                         }`}
+                        style={{ backgroundColor: color.value }}
                         title={color.displayValue}
                         data-testid={`color-${color.value}`}
                       />
@@ -186,9 +188,9 @@ const ProductDetail: React.FC = () => {
           </button>
           {/* Product Description */}
           <div className="pt-6 border-t border-gray-200" data-testid="product-description">
-            <p className="text-sm text-gray-600">
-              {product.description}
-            </p>
+            <div className="text-sm text-gray-600">
+              {parse(product.description)}
+            </div>
           </div>
         </div>
       </div>
