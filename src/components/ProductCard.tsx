@@ -15,16 +15,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Add with default options (first attribute values if present)
-    const sizeAttr = product.attributes?.find((a: any) => a.name.toLowerCase() === 'size');
-    const colorAttr = product.attributes?.find((a: any) => a.name.toLowerCase() === 'color');
-    const defaultSize = sizeAttr?.items?.[0]?.value;
-    const defaultColor = colorAttr?.items?.[0]?.value;
+    // Add with default options for all attributes
+    const selectedAttributes = (product.attributes || [])
+      .map((attr: any) => {
+        const attrName = attr.name.toLowerCase();
+        const value = attr.items?.[0]?.value;
+        if (value !== undefined && value !== '') {
+          return { id: attrName, value };
+        }
+        return null;
+      })
+      .filter(Boolean);
     addItem({
       ...product,
       quantity: 1,
-      selectedSize: defaultSize,
-      selectedColor: defaultColor
+      attributes: selectedAttributes
     });
     openCart();
   };

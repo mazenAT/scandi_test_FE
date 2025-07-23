@@ -85,59 +85,77 @@ const CartOverlay: React.FC = () => {
               <p className="text-center text-gray-500 py-8">Your cart is empty</p>
             ) : (
               <div className="space-y-3">
-                {state.items.map((item, index) => (
-                  <div 
-                    key={`${item.id}-${item.selectedSize}-${item.selectedColor}`}
-                    className="flex space-x-3"
-                    data-testid={`cart-item-${index}`}
-                  >
-                    <img
-                      src={item.gallery?.[0]}
-                      alt={item.name}
-                      className="w-12 h-12 object-cover rounded"
-                      data-testid={`cart-item-image-${index}`}
-                    />
-                    <div className="flex-1 space-y-1">
-                      <h3 className="text-sm font-medium leading-tight" data-testid={`cart-item-name-${index}`}>{item.name}</h3>
-                      <div className="text-xs text-gray-500">
-                        {Array.isArray(item.attributes) && item.attributes.map((attr: any) => {
-                          const attrNameKebab = (attr.id || attr.name || '').toLowerCase().replace(/\s+/g, '-');
-                          return (
-                            <div key={attrNameKebab} data-testid={`cart-item-attribute-${attrNameKebab}`}>
-                              <span
-                                data-testid={`cart-item-attribute-${attrNameKebab}-${attrNameKebab}${item[`selected${(attr.id || attr.name || '').charAt(0).toUpperCase() + (attr.id || attr.name || '').slice(1)}`] === attr.value ? '-selected' : ''}`}
-                              >
-                                {`${(attr.id || attr.name || '').charAt(0).toUpperCase() + (attr.id || attr.name || '').slice(1)}: ${attr.value}`}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-1">
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)} 
-                            className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 text-xs" 
-                            data-testid="cart-item-amount-decrease"
-                          >
-                            <Minus className="w-2 h-2" />
-                          </button>
-                          <span className="text-sm px-2" data-testid="cart-item-amount">{item.quantity}</span>
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)} 
-                            className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 text-xs" 
-                            data-testid="cart-item-amount-increase"
-                          >
-                            <Plus className="w-2 h-2" />
-                          </button>
+                {state.items.map((item, index) => {
+                  console.log('Cart item attributes:', item.attributes);
+                  return (
+                    <div 
+                      key={`${item.id}-${item.selectedSize}-${item.selectedColor}`}
+                      className="flex space-x-3"
+                      data-testid={`cart-item-${index}`}
+                    >
+                      <img
+                        src={item.gallery?.[0]}
+                        alt={item.name}
+                        className="w-12 h-12 object-cover rounded"
+                        data-testid={`cart-item-image-${index}`}
+                      />
+                      <div className="flex-1 space-y-1">
+                        <h3 className="text-sm font-medium leading-tight" data-testid={`cart-item-name-${index}`}>{item.name}</h3>
+                        <div className="text-xs text-gray-500">
+                          {Array.isArray(item.attributes) && item.attributes.length > 0 ? (
+                            item.attributes.map((attr: any) => {
+                              const attrNameKebab = (attr.id || attr.name || '').toLowerCase().replace(/\s+/g, '-');
+                              return (
+                                <div key={attrNameKebab} data-testid={`cart-item-attribute-${attrNameKebab}`}>
+                                  <span
+                                    data-testid={`cart-item-attribute-${attrNameKebab}-${attrNameKebab}`}
+                                  >
+                                    {`${(attr.id || attr.name || '').charAt(0).toUpperCase() + (attr.id || attr.name || '').slice(1)}: ${attr.value}`}
+                                  </span>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            // Fallback: show first value from product attributes if available
+                            item.attributes === undefined && item.product && item.product.attributes ? (
+                              item.product.attributes.map((attr: any) => {
+                                const attrNameKebab = (attr.name || '').toLowerCase().replace(/\s+/g, '-');
+                                const defaultValue = attr.items?.[0]?.value;
+                                return defaultValue ? (
+                                  <div key={attrNameKebab} data-testid={`cart-item-attribute-${attrNameKebab}`}>
+                                    <span data-testid={`cart-item-attribute-${attrNameKebab}-${attrNameKebab}`}>{`${attr.name.charAt(0).toUpperCase() + attr.name.slice(1)}: ${defaultValue}`}</span>
+                                  </div>
+                                ) : null;
+                              })
+                            ) : null
+                          )}
                         </div>
-                        <span className="text-sm font-medium" data-testid={`cart-item-price-${index}`}>
-                          {item.prices?.[0]?.currency.symbol}{(item.prices?.[0]?.amount * item.quantity).toFixed(2)}
-                        </span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-1">
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)} 
+                              className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 text-xs" 
+                              data-testid="cart-item-amount-decrease"
+                            >
+                              <Minus className="w-2 h-2" />
+                            </button>
+                            <span className="text-sm px-2" data-testid="cart-item-amount">{item.quantity}</span>
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)} 
+                              className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 text-xs" 
+                              data-testid="cart-item-amount-increase"
+                            >
+                              <Plus className="w-2 h-2" />
+                            </button>
+                          </div>
+                          <span className="text-sm font-medium" data-testid={`cart-item-price-${index}`}>
+                            {item.prices?.[0]?.currency.symbol}{(item.prices?.[0]?.amount * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

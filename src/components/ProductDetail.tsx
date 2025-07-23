@@ -31,6 +31,18 @@ const ProductDetail: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
 
+  React.useEffect(() => {
+    if (product && product.attributes) {
+      product.attributes.forEach((attr: any) => {
+        const attrName = attr.name.toLowerCase();
+        if (attrName === 'size' && !selectedSize && attr.items.length > 0) setSelectedSize(attr.items[0].value);
+        if (attrName === 'color' && !selectedColor && attr.items.length > 0) setSelectedColor(attr.items[0].value);
+        // Add more attributes as needed
+      });
+    }
+    // eslint-disable-next-line
+  }, [product]);
+
   if (loading) return <div>Loading...</div>;
   if (error || !product) return <div>Product not found</div>;
 
@@ -41,13 +53,13 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (!hasRequiredSelections) return;
-    // Collect selected attributes (only those with a value)
+    // Collect selected attributes (always use selected or default)
     const selectedAttributes = (product.attributes || [])
       .map((attr: any) => {
         const attrName = attr.name.toLowerCase();
-        let value = undefined;
-        if (attrName === 'size') value = selectedSize;
-        else if (attrName === 'color') value = selectedColor;
+        let value;
+        if (attrName === 'size') value = selectedSize || (attr.items[0]?.value);
+        else if (attrName === 'color') value = selectedColor || (attr.items[0]?.value);
         // Add more as needed for other attributes
         if (value !== undefined && value !== '') {
           return { id: attrName, value };
