@@ -141,13 +141,13 @@ const ProductDetail: React.FC = () => {
                 <h3 className="text-sm font-medium text-gray-900 mb-3">{attr.name.toUpperCase()}:</h3>
                 <div className="flex space-x-2">
                   {attr.items.map((item: any) => {
-                    let testIds = [`${attrNameKebab}-${item.value}`];
+                    const testIds = [`${attrNameKebab}-${item.value}`];
                     if (attrNameKebab === 'color' && item.displayValue && item.displayValue !== item.value) {
                       testIds.push(`${attrNameKebab}-${item.displayValue}`);
                     }
-                    return testIds.map((testId, idx) => (
+                    return (
                       <button
-                        key={testId}
+                        key={item.value}
                         onClick={() => {
                           if (attrNameKebab === 'size') setSelectedSize(item.value);
                           else if (attrNameKebab === 'color') setSelectedColor(item.value);
@@ -159,11 +159,12 @@ const ProductDetail: React.FC = () => {
                         }
                         style={attrNameKebab === 'color' ? { backgroundColor: item.value } : {}}
                         title={item.displayValue}
-                        data-testid={testId}
+                        data-testid={testIds[0]}
+                        {...(testIds[1] ? { [`data-testid-alt`]: testIds[1] } : {})}
                       >
                         {attrNameKebab === 'color' ? '' : item.displayValue}
                       </button>
-                    ));
+                    );
                   })}
                 </div>
               </div>
