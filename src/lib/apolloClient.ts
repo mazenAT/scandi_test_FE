@@ -5,7 +5,7 @@ const isLocal = typeof window !== 'undefined' && window.location.hostname === 'l
 const client = new ApolloClient({
   uri: isLocal
     ? 'http://localhost:8000/graphql'
-    : 'https://cors-anywhere.herokuapp.com/https://scanditest.fwh.is/graphql',
+    : '/api/proxy',
   cache: new InMemoryCache(),
 });
 
