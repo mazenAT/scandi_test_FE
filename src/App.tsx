@@ -23,7 +23,7 @@ const App = () => (
             <Header />
             <main>
               <Routes>
-                <Route path="/" element={<Navigate to="/women" replace />} />
+                <Route path="/" element={<Navigate to="/all" replace />} />
                 <Route path="/:category" element={<ProductListing />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
               </Routes>
