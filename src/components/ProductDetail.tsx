@@ -41,15 +41,20 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (!hasRequiredSelections) return;
-    // Collect selected attributes
-    const selectedAttributes = (product.attributes || []).map((attr: any) => {
-      const attrName = attr.name.toLowerCase();
-      let value = undefined;
-      if (attrName === 'size') value = selectedSize;
-      else if (attrName === 'color') value = selectedColor;
-      else if (attrName) value = (attr.selectedValue || ''); // fallback for other types if needed
-      return { id: attrName, value };
-    });
+    // Collect selected attributes (only those with a value)
+    const selectedAttributes = (product.attributes || [])
+      .map((attr: any) => {
+        const attrName = attr.name.toLowerCase();
+        let value = undefined;
+        if (attrName === 'size') value = selectedSize;
+        else if (attrName === 'color') value = selectedColor;
+        // Add more as needed for other attributes
+        if (value !== undefined && value !== '') {
+          return { id: attrName, value };
+        }
+        return null;
+      })
+      .filter(Boolean);
     addItem({
       ...product,
       quantity: 1,
