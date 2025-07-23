@@ -27,26 +27,14 @@ const ProductDetail: React.FC = () => {
   const { data, loading, error } = useQuery(GET_PRODUCT, { variables: { id } });
 
   const product = data?.product;
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedSize, setSelectedSize] = useState<string>('');
-  const [selectedColor, setSelectedColor] = useState<string>('');
-
-  React.useEffect(() => {
-    if (product && product.attributes) {
-      product.attributes.forEach((attr: any) => {
-        const attrName = attr.name.toLowerCase();
-        if (attrName === 'size' && !selectedSize && attr.items.length > 0) setSelectedSize(attr.items[0].value);
-        if (attrName === 'color' && !selectedColor && attr.items.length > 0) setSelectedColor(attr.items[0].value);
-        // Add more attributes as needed
-      });
-    }
-    // eslint-disable-next-line
-  }, [product]);
-
   if (loading) return <div>Loading...</div>;
   if (error || !product) return <div>Product not found</div>;
 
   const images = product.gallery || [];
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<string>('');
+
   const hasRequiredSelections =
     (!product.attributes?.find((a: any) => a.name.toLowerCase() === 'size') || selectedSize) &&
     (!product.attributes?.find((a: any) => a.name.toLowerCase() === 'color') || selectedColor);

@@ -14,7 +14,7 @@ const GET_CATEGORIES = gql`
 `;
 
 const Header: React.FC = () => {
-  const { getTotalItems, toggleCart } = useCart();
+  const { getTotalItems, toggleCart, closeCart } = useCart();
   const location = useLocation();
   const totalItems = getTotalItems();
   const { data, loading } = useQuery(GET_CATEGORIES);
@@ -27,6 +27,10 @@ const Header: React.FC = () => {
   const isActive = (categoryPath: string) => {
     return location.pathname === categoryPath;
   };
+
+  React.useEffect(() => {
+    closeCart();
+  }, [location.pathname]);
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { gql, useMutation } from '@apollo/client';
@@ -26,6 +26,22 @@ const CartOverlay: React.FC = () => {
   const totalPrice = getTotalPrice();
   const [createOrder, { loading, error, data }] = useMutation(CREATE_ORDER);
   const [success, setSuccess] = React.useState(false);
+
+  // Preselect first value for each attribute if not set
+  useEffect(() => {
+    state.items.forEach((item, index) => {
+      if (item.attributes && item.selectedAttributes) {
+        item.attributes.forEach((attr: any) => {
+          const attrNameKebab = (attr.name || '').toLowerCase().replace(/\s+/g, '-');
+          const selected = item.selectedAttributes.find((a: any) => a.id === attrNameKebab);
+          if (!selected && attr.items && attr.items.length > 0) {
+            updateAttribute(index, attrNameKebab, attr.items[0].value);
+          }
+        });
+      }
+    });
+    // eslint-disable-next-line
+  }, [state.items]);
 
   if (!state.isOpen) return null;
 
@@ -114,7 +130,7 @@ const CartOverlay: React.FC = () => {
                                       <button
                                         key={option.value}
                                         onClick={() => updateAttribute(index, attrNameKebab, option.value)}
-                                        className={`w-6 h-6 rounded border-2 ${selected === option.value ? 'border-black' : 'border-gray-300'}`}
+                                        className={`w-8 h-8 rounded border-2 ${selected === option.value ? 'border-black' : 'border-gray-300'}`}
                                         style={{ backgroundColor: option.value }}
                                         title={option.displayValue}
                                         data-testid={`cart-item-attribute-${attrNameKebab}-${option.value}${selected === option.value ? '-selected' : ''}`}
@@ -123,7 +139,7 @@ const CartOverlay: React.FC = () => {
                                       <button
                                         key={option.value}
                                         onClick={() => updateAttribute(index, attrNameKebab, option.value)}
-                                        className={`px-2 py-1 border text-xs font-medium rounded ${selected === option.value ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400'}`}
+                                        className={`px-4 py-2 border text-sm font-medium rounded ${selected === option.value ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400'}`}
                                         data-testid={`cart-item-attribute-${attrNameKebab}-${option.value}${selected === option.value ? '-selected' : ''}`}
                                       >
                                         {option.displayValue}
