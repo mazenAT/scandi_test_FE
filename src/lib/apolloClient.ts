@@ -5,7 +5,7 @@ const isLocal = typeof window !== 'undefined' && window.location.hostname === 'l
 const client = new ApolloClient({
   uri: isLocal
     ? 'http://localhost:8000/graphql'
-    : '/api/proxy',
+    : 'https://web-production-a0a1.up.railway.app/graphql',
   cache: new InMemoryCache(),
 });
 
