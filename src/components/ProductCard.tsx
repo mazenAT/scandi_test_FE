@@ -29,7 +29,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     addItem({
       ...product,
       quantity: 1,
-      attributes: selectedAttributes
+      attributes: product.attributes,
+      selectedAttributes: selectedAttributes
     });
     openCart();
   };

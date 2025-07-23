@@ -21,7 +21,8 @@ export interface CartItem {
   gallery: string[];
   prices: { amount: number; currency: { symbol: string } }[];
   inStock: boolean;
-  attributes?: any;
+  attributes?: any[]; // full product attributes
+  selectedAttributes: { id: string; value: string }[];
   brand?: string;
   quantity: number;
   selectedSize?: string;
@@ -40,7 +41,8 @@ type CartAction =
   | { type: 'TOGGLE_CART' }
   | { type: 'OPEN_CART' }
   | { type: 'CLOSE_CART' }
-  | { type: 'LOAD_CART'; payload: CartItem[] };
+  | { type: 'LOAD_CART'; payload: CartItem[] }
+  | { type: 'UPDATE_ATTRIBUTE'; payload: { index: number; attrId: string; value: string } };
 
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
@@ -87,6 +89,18 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     case 'LOAD_CART':
       return { ...state, items: action.payload };
     
+    case 'UPDATE_ATTRIBUTE': {
+      const { index, attrId, value } = action.payload;
+      const updatedItems = state.items.map((item, i) => {
+        if (i !== index) return item;
+        const updatedSelected = item.selectedAttributes.map(attr =>
+          attr.id === attrId ? { ...attr, value } : attr
+        );
+        return { ...item, selectedAttributes: updatedSelected };
+      });
+      return { ...state, items: updatedItems };
+    }
+    
     default:
       return state;
   }
@@ -97,6 +111,7 @@ interface CartContextType {
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  updateAttribute: (index: number, attrId: string, value: string) => void;
   toggleCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -135,6 +150,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
   };
 
+  const updateAttribute = (index: number, attrId: string, value: string) => {
+    dispatch({ type: 'UPDATE_ATTRIBUTE', payload: { index, attrId, value } });
+  };
+
   const toggleCart = () => {
     dispatch({ type: 'TOGGLE_CART' });
   };
@@ -161,6 +180,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addItem,
       removeItem,
       updateQuantity,
+      updateAttribute,
       toggleCart,
       openCart,
       closeCart,

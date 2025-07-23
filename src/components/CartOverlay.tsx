@@ -22,7 +22,7 @@ const CREATE_ORDER = gql`
 `;
 
 const CartOverlay: React.FC = () => {
-  const { state, closeCart, updateQuantity, getTotalPrice } = useCart();
+  const { state, closeCart, updateQuantity, updateAttribute, getTotalItems, getTotalPrice } = useCart();
   const totalPrice = getTotalPrice();
   const [createOrder, { loading, error, data }] = useMutation(CREATE_ORDER);
   const [success, setSuccess] = React.useState(false);
@@ -102,33 +102,38 @@ const CartOverlay: React.FC = () => {
                       <div className="flex-1 space-y-1">
                         <h3 className="text-sm font-medium leading-tight" data-testid={`cart-item-name-${index}`}>{item.name}</h3>
                         <div className="text-xs text-gray-500">
-                          {Array.isArray(item.attributes) && item.attributes.length > 0 ? (
-                            item.attributes.map((attr: any) => {
-                              const attrNameKebab = (attr.id || attr.name || '').toLowerCase().replace(/\s+/g, '-');
-                              return (
-                                <div key={attrNameKebab} data-testid={`cart-item-attribute-${attrNameKebab}`}>
-                                  <span
-                                    data-testid={`cart-item-attribute-${attrNameKebab}-${attrNameKebab}`}
-                                  >
-                                    {`${(attr.id || attr.name || '').charAt(0).toUpperCase() + (attr.id || attr.name || '').slice(1)}: ${attr.value}`}
-                                  </span>
+                          {Array.isArray(item.attributes) && item.selectedAttributes && item.attributes.map((attr: any) => {
+                            const attrNameKebab = (attr.name || '').toLowerCase().replace(/\s+/g, '-');
+                            const selected = item.selectedAttributes.find((a: any) => a.id === attrNameKebab)?.value;
+                            return (
+                              <div key={attrNameKebab} data-testid={`cart-item-attribute-${attrNameKebab}`} className="flex items-center mb-1">
+                                <span className="mr-2 font-medium">{attr.name.toUpperCase()}:</span>
+                                <div className="flex space-x-1">
+                                  {attr.items.map((option: any) => (
+                                    attrNameKebab === 'color' ? (
+                                      <button
+                                        key={option.value}
+                                        onClick={() => updateAttribute(index, attrNameKebab, option.value)}
+                                        className={`w-6 h-6 rounded border-2 ${selected === option.value ? 'border-black' : 'border-gray-300'}`}
+                                        style={{ backgroundColor: option.value }}
+                                        title={option.displayValue}
+                                        data-testid={`cart-item-attribute-${attrNameKebab}-${option.value}${selected === option.value ? '-selected' : ''}`}
+                                      />
+                                    ) : (
+                                      <button
+                                        key={option.value}
+                                        onClick={() => updateAttribute(index, attrNameKebab, option.value)}
+                                        className={`px-2 py-1 border text-xs font-medium rounded ${selected === option.value ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400'}`}
+                                        data-testid={`cart-item-attribute-${attrNameKebab}-${option.value}${selected === option.value ? '-selected' : ''}`}
+                                      >
+                                        {option.displayValue}
+                                      </button>
+                                    )
+                                  ))}
                                 </div>
-                              );
-                            })
-                          ) : (
-                            // Fallback: show first value from product attributes if available
-                            item.attributes === undefined && item.product && item.product.attributes ? (
-                              item.product.attributes.map((attr: any) => {
-                                const attrNameKebab = (attr.name || '').toLowerCase().replace(/\s+/g, '-');
-                                const defaultValue = attr.items?.[0]?.value;
-                                return defaultValue ? (
-                                  <div key={attrNameKebab} data-testid={`cart-item-attribute-${attrNameKebab}`}>
-                                    <span data-testid={`cart-item-attribute-${attrNameKebab}-${attrNameKebab}`}>{`${attr.name.charAt(0).toUpperCase() + attr.name.slice(1)}: ${defaultValue}`}</span>
-                                  </div>
-                                ) : null;
-                              })
-                            ) : null
-                          )}
+                              </div>
+                            );
+                          })}
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-1">
