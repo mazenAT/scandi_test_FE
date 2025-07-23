@@ -100,17 +100,18 @@ const CartOverlay: React.FC = () => {
                     <div className="flex-1 space-y-1">
                       <h3 className="text-sm font-medium leading-tight" data-testid={`cart-item-name-${index}`}>{item.name}</h3>
                       <div className="text-xs text-gray-500">
-                        {item.selectedSize && (
-                          <div data-testid="cart-item-attribute-size">
-                            <span data-testid="cart-item-attribute-size-size">Size: {item.selectedSize}</span>
-                            {item.selectedSize && item.selectedColor && <span> • </span>}
-                          </div>
-                        )}
-                        {item.selectedColor && (
-                          <div data-testid="cart-item-attribute-color">
-                            <span data-testid="cart-item-attribute-color-color">Color: {item.selectedColor}</span>
-                          </div>
-                        )}
+                        {item.attributes && Object.entries(item.attributes).map(([attrName, attrValue]: [string, any]) => {
+                          const attrNameKebab = attrName.toLowerCase().replace(/\s+/g, '-');
+                          return (
+                            <div key={attrNameKebab} data-testid={`cart-item-attribute-${attrNameKebab}`}>
+                              <span
+                                data-testid={`cart-item-attribute-${attrNameKebab}-${attrNameKebab}${item[`selected${attrName.charAt(0).toUpperCase() + attrName.slice(1)}`] === attrValue ? '-selected' : ''}`}
+                              >
+                                {`${attrName.charAt(0).toUpperCase() + attrName.slice(1)}: ${attrValue}`}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-1">

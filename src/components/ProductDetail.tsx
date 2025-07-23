@@ -118,54 +118,37 @@ const ProductDetail: React.FC = () => {
               {product.name}
             </h1>
           </div>
-          {/* Size Selection */}
-          {product.attributes?.find((a: any) => a.name.toLowerCase() === 'size') && (
-            <div data-testid="product-attribute-size">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">SIZE:</h3>
-              <div className="flex space-x-2">
-                {product.attributes
-                  .find((a: any) => a.name.toLowerCase() === 'size')
-                  .items.map((size: any) => (
+          {/* Product Attributes (dynamic) */}
+          {product.attributes && product.attributes.map((attr: any) => {
+            const attrNameKebab = attr.name.toLowerCase().replace(/\s+/g, '-');
+            const selected = (attrNameKebab === 'size' ? selectedSize : attrNameKebab === 'color' ? selectedColor : undefined);
+            return (
+              <div key={attr.id} data-testid={`product-attribute-${attrNameKebab}`}>
+                <h3 className="text-sm font-medium text-gray-900 mb-3">{attr.name.toUpperCase()}:</h3>
+                <div className="flex space-x-2">
+                  {attr.items.map((item: any) => (
                     <button
-                      key={size.value}
-                      onClick={() => setSelectedSize(size.value)}
-                      className={`px-4 py-2 border text-sm font-medium ${
-                        selectedSize === size.value
-                          ? 'border-black bg-black text-white'
-                          : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400'
-                      }`}
-                      data-testid={`size-${size.value}`}
+                      key={item.value}
+                      onClick={() => {
+                        if (attrNameKebab === 'size') setSelectedSize(item.value);
+                        else if (attrNameKebab === 'color') setSelectedColor(item.value);
+                      }}
+                      className={
+                        attrNameKebab === 'color'
+                          ? `w-8 h-8 rounded border-2 ${selected === item.value ? 'border-black' : 'border-gray-300'}`
+                          : `px-4 py-2 border text-sm font-medium ${selected === item.value ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400'}`
+                      }
+                      style={attrNameKebab === 'color' ? { backgroundColor: item.value } : {}}
+                      title={item.displayValue}
+                      data-testid={`${attrNameKebab}-${item.value}`}
                     >
-                      {size.displayValue}
+                      {attrNameKebab === 'color' ? '' : item.displayValue}
                     </button>
                   ))}
+                </div>
               </div>
-            </div>
-          )}
-          {/* Color Selection */}
-          {product.attributes?.find((a: any) => a.name.toLowerCase() === 'color') && (
-            <div data-testid="product-attribute-color">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">COLOR:</h3>
-              <div className="flex space-x-2">
-                {product.attributes
-                  .find((a: any) => a.name.toLowerCase() === 'color')
-                  .items.map((color: any) => {
-                    return (
-                      <button
-                        key={color.value}
-                        onClick={() => setSelectedColor(color.value)}
-                        className={`w-8 h-8 rounded border-2 ${
-                          selectedColor === color.value ? 'border-black' : 'border-gray-300'
-                        }`}
-                        style={{ backgroundColor: color.value }}
-                        title={color.displayValue}
-                        data-testid={`color-${color.value}`}
-                      />
-                    );
-                  })}
-              </div>
-            </div>
-          )}
+            );
+          })}
           {/* Price */}
           <div>
             <h3 className="text-sm font-medium text-gray-900 mb-2">PRICE:</h3>
