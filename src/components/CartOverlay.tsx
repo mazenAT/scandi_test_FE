@@ -100,14 +100,14 @@ const CartOverlay: React.FC = () => {
                     <div className="flex-1 space-y-1">
                       <h3 className="text-sm font-medium leading-tight" data-testid={`cart-item-name-${index}`}>{item.name}</h3>
                       <div className="text-xs text-gray-500">
-                        {item.attributes && Object.entries(item.attributes).map(([attrName, attrValue]: [string, any]) => {
-                          const attrNameKebab = attrName.toLowerCase().replace(/\s+/g, '-');
+                        {Array.isArray(item.attributes) && item.attributes.map((attr: any) => {
+                          const attrNameKebab = (attr.id || attr.name || '').toLowerCase().replace(/\s+/g, '-');
                           return (
                             <div key={attrNameKebab} data-testid={`cart-item-attribute-${attrNameKebab}`}>
                               <span
-                                data-testid={`cart-item-attribute-${attrNameKebab}-${attrNameKebab}${item[`selected${attrName.charAt(0).toUpperCase() + attrName.slice(1)}`] === attrValue ? '-selected' : ''}`}
+                                data-testid={`cart-item-attribute-${attrNameKebab}-${attrNameKebab}${item[`selected${(attr.id || attr.name || '').charAt(0).toUpperCase() + (attr.id || attr.name || '').slice(1)}`] === attr.value ? '-selected' : ''}`}
                               >
-                                {`${attrName.charAt(0).toUpperCase() + attrName.slice(1)}: ${attrValue}`}
+                                {`${(attr.id || attr.name || '').charAt(0).toUpperCase() + (attr.id || attr.name || '').slice(1)}: ${attr.value}`}
                               </span>
                             </div>
                           );

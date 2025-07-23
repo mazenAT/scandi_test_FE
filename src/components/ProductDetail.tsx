@@ -126,25 +126,31 @@ const ProductDetail: React.FC = () => {
               <div key={attr.id} data-testid={`product-attribute-${attrNameKebab}`}>
                 <h3 className="text-sm font-medium text-gray-900 mb-3">{attr.name.toUpperCase()}:</h3>
                 <div className="flex space-x-2">
-                  {attr.items.map((item: any) => (
-                    <button
-                      key={item.value}
-                      onClick={() => {
-                        if (attrNameKebab === 'size') setSelectedSize(item.value);
-                        else if (attrNameKebab === 'color') setSelectedColor(item.value);
-                      }}
-                      className={
-                        attrNameKebab === 'color'
-                          ? `w-8 h-8 rounded border-2 ${selected === item.value ? 'border-black' : 'border-gray-300'}`
-                          : `px-4 py-2 border text-sm font-medium ${selected === item.value ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400'}`
-                      }
-                      style={attrNameKebab === 'color' ? { backgroundColor: item.value } : {}}
-                      title={item.displayValue}
-                      data-testid={`${attrNameKebab}-${item.value}`}
-                    >
-                      {attrNameKebab === 'color' ? '' : item.displayValue}
-                    </button>
-                  ))}
+                  {attr.items.map((item: any) => {
+                    let testIds = [`${attrNameKebab}-${item.value}`];
+                    if (attrNameKebab === 'color' && item.displayValue && item.displayValue !== item.value) {
+                      testIds.push(`${attrNameKebab}-${item.displayValue}`);
+                    }
+                    return testIds.map((testId, idx) => (
+                      <button
+                        key={testId}
+                        onClick={() => {
+                          if (attrNameKebab === 'size') setSelectedSize(item.value);
+                          else if (attrNameKebab === 'color') setSelectedColor(item.value);
+                        }}
+                        className={
+                          attrNameKebab === 'color'
+                            ? `w-8 h-8 rounded border-2 ${selected === item.value ? 'border-black' : 'border-gray-300'}`
+                            : `px-4 py-2 border text-sm font-medium ${selected === item.value ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400'}`
+                        }
+                        style={attrNameKebab === 'color' ? { backgroundColor: item.value } : {}}
+                        title={item.displayValue}
+                        data-testid={testId}
+                      >
+                        {attrNameKebab === 'color' ? '' : item.displayValue}
+                      </button>
+                    ));
+                  })}
                 </div>
               </div>
             );

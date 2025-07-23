@@ -35,18 +35,18 @@ const Header: React.FC = () => {
           {/* Navigation */}
           <nav className="flex space-x-8">
             {categories.map((cat) => (
-              <Link
+            <Link 
                 key={cat.name}
                 to={cat.path}
-                className={`text-sm font-medium ${
+              className={`text-sm font-medium ${
                   isActive(cat.path)
-                    ? 'text-green-500 border-b-2 border-green-500 pb-2'
-                    : 'text-gray-700 hover:text-green-500'
-                }`}
+                  ? 'text-green-500 border-b-2 border-green-500 pb-2' 
+                  : 'text-gray-700 hover:text-green-500'
+              }`}
                 data-testid={isActive(cat.path) ? 'active-category-link' : 'category-link'}
-              >
+            >
                 {cat.name}
-              </Link>
+            </Link>
             ))}
           </nav>
 
@@ -58,14 +58,14 @@ const Header: React.FC = () => {
           </div>
 
           {/* Cart Icon */}
-          <button
+          <button 
             onClick={toggleCart}
             className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
-            data-testid="cart-icon"
+            data-testid="cart-btn"
           >
             <ShoppingCart className="w-6 h-6 text-gray-700" />
             {totalItems > 0 && (
-              <span
+              <span 
                 className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
                 data-testid="cart-badge"
               >
