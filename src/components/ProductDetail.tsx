@@ -41,11 +41,19 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (!hasRequiredSelections) return;
+    // Collect selected attributes
+    const selectedAttributes = (product.attributes || []).map((attr: any) => {
+      const attrName = attr.name.toLowerCase();
+      let value = undefined;
+      if (attrName === 'size') value = selectedSize;
+      else if (attrName === 'color') value = selectedColor;
+      else if (attrName) value = (attr.selectedValue || ''); // fallback for other types if needed
+      return { id: attrName, value };
+    });
     addItem({
       ...product,
       quantity: 1,
-      selectedSize: selectedSize || undefined,
-      selectedColor: selectedColor || undefined
+      attributes: selectedAttributes
     });
     openCart();
   };
